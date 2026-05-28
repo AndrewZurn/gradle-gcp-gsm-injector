@@ -11,10 +11,13 @@ plugins {
 
     // Publish to Maven repositories (including local)
     `maven-publish`
+
+    // Publish to the Gradle Plugin Portal
+    alias(libs.plugins.gradle.plugin.publish)
 }
 
 group = "com.andrewzurn"
-version = "0.1.0-SNAPSHOT"
+version = "0.1.0"
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -32,10 +35,16 @@ dependencies {
 }
 
 gradlePlugin {
+    website = "https://github.com/AndrewZurn/gradle-gcp-gsm-injector"
+    vcsUrl = "https://github.com/AndrewZurn/gradle-gcp-gsm-injector"
+
     // Define the plugin
     val gcpGsmInjector by plugins.creating {
         id = "com.andrewzurn.gcp-gsm-injector"
         implementationClass = "com.andrewzurn.gcp.gsm.injector.GcpGsmInjectorPlugin"
+        displayName = "GCP Secret Manager Injector"
+        description = "A Gradle plugin that injects secrets from Google Cloud Secret Manager into task environments and system properties."
+        tags = listOf("gcp", "secret-manager", "secrets", "environment-variables", "google-cloud")
     }
 }
 

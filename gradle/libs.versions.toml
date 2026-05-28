@@ -6,6 +6,7 @@ gcp-secretmanager = "2.42.0"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "1.2.1" }
 
 [libraries]
 gcp-secretmanager = { module = "com.google.cloud:google-cloud-secretmanager", version.ref = "gcp-secretmanager" }

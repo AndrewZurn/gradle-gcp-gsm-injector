@@ -1,5 +1,7 @@
 # gcp-gsm-injector
 
+[![GitHub](https://img.shields.io/badge/GitHub-AndrewZurn%2Fgradle--gcp--gsm--injector-blue?logo=github)](https://github.com/AndrewZurn/gradle-gcp-gsm-injector)
+
 A Gradle plugin that injects secrets from **Google Cloud Secret Manager** into the local environments and system properties at runtime. This eliminates the need to hardcode secrets or manually configure them on every developer machine when developing/running an application locally, ensuring a smooth development experience from cloning to running the application.
 
 ## Prerequisites
