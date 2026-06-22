@@ -49,6 +49,39 @@ class GcpGsmInjectorPluginFunctionalTest {
     }
 
     @Test
+    fun `can configure extension from groovy build script`() {
+        projectDir.resolve("settings.gradle").writeText("""
+            rootProject.name = 'test-project'
+        """.trimIndent())
+
+        projectDir.resolve("build.gradle").writeText("""
+            plugins {
+                id 'com.andrewzurn.gcp-gsm-injector'
+            }
+
+            gcpGsmInjector {
+                projectId.set('my-project')
+                targetTasks.set(['test'])
+                secrets {
+                    register('db-password') {
+                        envVar.set('DB_PASSWORD')
+                    }
+                }
+            }
+        """.trimIndent())
+
+        val runner = GradleRunner.create()
+            .forwardOutput()
+            .withPluginClasspath()
+            .withArguments("help")
+            .withProjectDir(projectDir)
+
+        val result = runner.build()
+
+        assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+    }
+
+    @Test
     fun `logs error when target task is not JavaExec or Test`() {
         settingsFile.writeText("""
             rootProject.name = "test-project"

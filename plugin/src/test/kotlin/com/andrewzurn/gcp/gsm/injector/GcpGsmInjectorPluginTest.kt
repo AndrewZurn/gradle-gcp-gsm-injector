@@ -108,6 +108,18 @@ class GcpGsmInjectorPluginTest {
         assertTrue(exception.message!!.contains("Failed to fetch secret 'missing-secret'"))
     }
 
+    @Test
+    fun `authentication failure message explains ADC reauthentication`() {
+        val exception = RuntimeException(
+            "POST https://oauth2.googleapis.com/token { error: invalid_grant, error_subtype: invalid_rapt }"
+        )
+
+        val message = authenticationFailureMessage(exception)
+
+        assertTrue(message.contains("Application Default Credentials (ADC) require reauthentication"))
+        assertTrue(message.contains("gcloud auth application-default login"))
+    }
+
     class MockSecretResolver(private val secrets: Map<String, String>) : SecretResolver {
         override fun resolve(projectId: String, secretName: String, version: String): String {
             return secrets[secretName] ?: throw RuntimeException("Secret not found: $secretName")

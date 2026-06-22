@@ -87,6 +87,7 @@ When you run `./gradlew bootRun` (for a spring boot app) or `./gradlew test` (or
 The plugin provides clear error messages for common failures:
 
 - **ADC not configured** — `Failed to authenticate with Google Cloud Secret Manager. Ensure Application Default Credentials (ADC) are configured...`
+- **ADC requires reauthentication** — `Run gcloud auth application-default login and retry...`
 - **Permission denied** — `Permission denied accessing secret 'X'. Ensure the authenticated account has 'Secret Manager Secret Accessor' role.`
 - **Secret not found** — `Secret 'X' version 'Y' not found in project 'Z'.`
 - **Invalid task type** — `Target task 'X' must be a JavaExec or Test task...`

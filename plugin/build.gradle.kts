@@ -17,7 +17,7 @@ plugins {
 }
 
 group = "com.andrewzurn"
-version = "0.1.0"
+version = "0.2.0"
 
 repositories {
     // Use Maven Central for resolving dependencies.

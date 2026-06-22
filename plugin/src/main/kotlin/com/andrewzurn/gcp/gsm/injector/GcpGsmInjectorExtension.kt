@@ -1,5 +1,6 @@
 package com.andrewzurn.gcp.gsm.injector
 
+import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
@@ -31,5 +32,12 @@ open class GcpGsmInjectorExtension(project: Project) {
      */
     val secrets: NamedDomainObjectContainer<SecretConfig> = project.objects.domainObjectContainer(SecretConfig::class.java) { name ->
         SecretConfig(name, project.objects)
+    }
+
+    /**
+     * Groovy/Kotlin DSL entry point for configuring the secrets container.
+     */
+    fun secrets(action: Action<in NamedDomainObjectContainer<SecretConfig>>) {
+        action.execute(secrets)
     }
 }

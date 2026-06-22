@@ -37,7 +37,7 @@ class DefaultSecretResolver : SecretResolver {
             SecretManagerServiceClient.create()
         } catch (e: Exception) {
             throw GradleException(
-                "Failed to create Secret Manager client. Ensure Application Default Credentials (ADC) are configured. Error: ${e.message}",
+                authenticationFailureMessage(e),
                 e
             )
         }
@@ -50,7 +50,7 @@ class DefaultSecretResolver : SecretResolver {
             response.payload.data.toStringUtf8()
         } catch (e: UnauthenticatedException) {
             throw GradleException(
-                "Failed to authenticate with Google Cloud Secret Manager. Ensure Application Default Credentials (ADC) are configured (e.g., via `gcloud auth application-default login` or a service account).",
+                authenticationFailureMessage(e),
                 e
             )
         } catch (e: PermissionDeniedException) {
@@ -64,6 +64,10 @@ class DefaultSecretResolver : SecretResolver {
                 e
             )
         } catch (e: Exception) {
+            if (isReauthFailure(e)) {
+                throw GradleException(authenticationFailureMessage(e), e)
+            }
+
             throw GradleException(
                 "Failed to access secret '$secretName': ${e.message}",
                 e
@@ -74,4 +78,24 @@ class DefaultSecretResolver : SecretResolver {
     override fun close() {
         client.close()
     }
+}
+
+internal fun authenticationFailureMessage(exception: Throwable): String {
+    return if (isReauthFailure(exception)) {
+        "Failed to authenticate with Google Cloud Secret Manager because Application Default Credentials (ADC) require reauthentication. Run `gcloud auth application-default login` and retry. If the error persists, run `gcloud auth application-default revoke` first, then log in again."
+    } else {
+        "Failed to authenticate with Google Cloud Secret Manager. Ensure Application Default Credentials (ADC) are configured (e.g., via `gcloud auth application-default login` or a service account)."
+    }
+}
+
+private fun isReauthFailure(exception: Throwable): Boolean {
+    var current: Throwable? = exception
+    while (current != null) {
+        val details = listOfNotNull(current.message, current.toString()).joinToString(" ")
+        if (details.contains("invalid_grant") || details.contains("invalid_rapt")) {
+            return true
+        }
+        current = current.cause
+    }
+    return false
 }
