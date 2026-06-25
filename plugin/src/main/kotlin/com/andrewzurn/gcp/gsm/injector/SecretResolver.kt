@@ -82,9 +82,14 @@ class DefaultSecretResolver : SecretResolver {
 
 internal fun authenticationFailureMessage(exception: Throwable): String {
     return if (isReauthFailure(exception)) {
-        "Failed to authenticate with Google Cloud Secret Manager because Application Default Credentials (ADC) require reauthentication. Run `gcloud auth application-default login` and retry. If the error persists, run `gcloud auth application-default revoke` first, then log in again."
+        "Failed to authenticate with Google Cloud Secret Manager because Application Default Credentials (ADC) require" +
+            " reauthentication. Run `gcloud auth application-default login` and retry. If the error persists, run " +
+            "`gcloud auth application-default revoke` first, then log in again. If error still persists, consider " +
+            "killing any running gradle daemons (as it could have invalid cache state)."
     } else {
-        "Failed to authenticate with Google Cloud Secret Manager. Ensure Application Default Credentials (ADC) are configured (e.g., via `gcloud auth application-default login` or a service account)."
+        "Failed to authenticate with Google Cloud Secret Manager. Ensure Application Default Credentials (ADC) are " +
+            "configured (e.g., via `gcloud auth application-default login` or a service account). If error still " +
+            "persists, consider killing any running gradle daemons (as it could have invalid cache state)."
     }
 }
 
